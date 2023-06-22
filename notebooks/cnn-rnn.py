@@ -87,7 +87,7 @@ with torch.no_grad():
 print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
 
 with profile(activities=[
-        ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
+        ProfilerActivity.CUDA], record_shapes=True) as prof:
     with record_function("model_inference"):
         net(images)
 
@@ -166,7 +166,7 @@ plt.legend()
 plt.show()
 
 with profile(activities=[
-        ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
+         ProfilerActivity.CUDA], record_shapes=True) as prof:
     with record_function("model_inference"):
         model(input_data)
 
