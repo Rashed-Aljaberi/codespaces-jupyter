@@ -49,7 +49,7 @@ class Net(nn.Module):
         return output
 
 # Initialize the network and the optimizer
-net = Net()
+net = Net().cuda()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
 
@@ -129,6 +129,7 @@ output_size = 1
 learning_rate = 0.01
 
 model = RNN(input_size, hidden_size, output_size)
+model=model.cuda()
 
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
