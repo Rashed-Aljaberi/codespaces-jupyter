@@ -10,6 +10,8 @@ from torch.profiler import profile, record_function, ProfilerActivity
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 '''
 print('start of cnn') 
 # Load and normalize the MNIST dataset
@@ -50,7 +52,7 @@ class Net(nn.Module):
         return output
 
 # Initialize the network and the optimizer
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 net = Net().to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
