@@ -49,7 +49,7 @@ class Net(nn.Module):
         return output
 
 # Initialize the network and the optimizer
-net = Net().cuda()
+net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
 
