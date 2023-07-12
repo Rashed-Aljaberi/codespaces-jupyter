@@ -10,6 +10,7 @@ from torch.profiler import profile, record_function, ProfilerActivity
 import numpy as np
 import matplotlib.pyplot as plt
 
+'''
 print('start of cnn') 
 # Load and normalize the MNIST dataset
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
@@ -94,7 +95,7 @@ with profile(activities=[ProfilerActivity.CUDA], record_shapes=True) as prof:
 
 print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
-
+'''
 
 
 print('start of rnn')
