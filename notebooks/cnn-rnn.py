@@ -49,7 +49,8 @@ class Net(nn.Module):
         return output
 
 # Initialize the network and the optimizer
-net = Net()
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+net = Net().to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
 
@@ -59,7 +60,7 @@ def train():
     for epoch in range(2):  
         running_loss = 0.0
         for i, data in enumerate(trainloader, 0):
-            inputs, labels = data
+            inputs, labels = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
             outputs = net(inputs)
             loss = criterion(outputs, labels)
@@ -78,7 +79,7 @@ correct = 0
 total = 0
 with torch.no_grad():
     for data in testloader:
-        images, labels = data
+        images, labels = data[0].to(device), data[1].to(device)
         outputs = net(images)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
@@ -86,15 +87,17 @@ with torch.no_grad():
 
 print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
 
-with profile(activities=[
-        ProfilerActivity.CUDA], record_shapes=True) as prof:
+with profile(activities=[ProfilerActivity.CUDA], record_shapes=True) as prof:
     with record_function("model_inference"):
-        net(images)
+        net(images.to(device))
+
 
 print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
 
 
+
+print('start of rnn')
 # generate a sine wave
 sequence_length = 20
 num_samples = 1000
@@ -105,8 +108,8 @@ sin_wave = np.sin(x)
 input_data = [sin_wave[i:i+sequence_length] for i in range(sin_wave.shape[0] - sequence_length)]
 target_data = [sin_wave[i+sequence_length] for i in range(sin_wave.shape[0] - sequence_length)]
 
-input_data = torch.tensor(input_data).float().unsqueeze(2)
-target_data = torch.tensor(target_data).float()
+input_data = torch.tensor(input_data).float().unsqueeze(2).to(device)
+target_data = torch.tensor(target_data).float().to(device)
 
 class RNN(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
@@ -128,8 +131,8 @@ hidden_size = 32
 output_size = 1
 learning_rate = 0.01
 
-model = RNN(input_size, hidden_size, output_size)
-model=model.cuda()
+model = RNN(input_size, hidden_size, output_size).to(device)
+model=model
 
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -157,9 +160,10 @@ test_seq = input_data[0]
 predictions = []
 for _ in range(input_data.shape[0]):
     with torch.no_grad():
-        model_out = model(test_seq.unsqueeze(0))
-        predictions.append(model_out)
+        model_out = model(test_seq.unsqueeze(0).to(device))
+        predictions.append(model_out.cpu())  # bring back to cpu for plotting
         test_seq = torch.cat((test_seq[1:], model_out), 0)
+
 
 plt.plot(sin_wave, label="Real Data")
 plt.plot(predictions, label="Predictions")
