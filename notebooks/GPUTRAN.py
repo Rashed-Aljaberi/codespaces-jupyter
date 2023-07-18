@@ -7,7 +7,7 @@ from codecarbon import track_emissions
 from torch.profiler import profile, record_function, ProfilerActivity
 
 # Check if a GPU is available and if not, default to CPU
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda")
 
 class Transformer(nn.Module):
     def __init__(self, input_dim, output_dim, hidden_dim, num_layers, num_heads):
@@ -56,7 +56,7 @@ criterion = nn.CrossEntropyLoss()
 tracker = track_emissions(project_name="My Project")
 
 # Training loop with Profiler
-with profile(activities=[ProfilerActivity.CPU], record_shapes=True) as prof:
+with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
     for epoch in range(num_epochs):
         model.train()
         for batch_idx, (data, target) in enumerate(train_loader):
