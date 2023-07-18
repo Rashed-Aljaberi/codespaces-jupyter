@@ -33,7 +33,7 @@ hidden_dim = 256  # Hidden dimension of the model
 num_layers = 4  # Number of transformer layers
 num_heads = 8  # Number of attention heads
 learning_rate = 0.001
-num_epochs = 10
+num_epochs = 2
 
 # Data loading and preprocessing
 transform = transforms.Compose([
