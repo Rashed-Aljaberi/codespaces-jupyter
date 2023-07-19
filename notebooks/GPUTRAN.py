@@ -53,7 +53,8 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 criterion = nn.CrossEntropyLoss()
 
 # CodeCarbon emission tracking
-tracker = track_emissions(project_name="My Project")
+tracker = EmissionsTracker(project_name="My Project")
+tracker.start()
 
 # Training loop with Profiler
 with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
@@ -86,5 +87,5 @@ accuracy = total_correct / total_samples
 print(f"Accuracy: {accuracy * 100}%")
 
 # Stop emission tracking and print emissions summary
-tracker.stop()
-print(tracker.summary())
+emissions = tracker.stop()
+print(emissions)
