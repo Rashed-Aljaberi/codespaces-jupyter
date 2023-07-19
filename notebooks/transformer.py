@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data
 from torchvision import datasets, transforms
-from codecarbon import track_emissions
+from codecarbon import EmissionsTracker
 from torch.profiler import profile, record_function, ProfilerActivity
 
 class Transformer(nn.Module):
